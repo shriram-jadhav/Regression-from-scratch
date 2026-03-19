@@ -1,9 +1,10 @@
 # Salary Prediction using Machine Learning
 
-> A regression-based ML pipeline that predicts salary from experience, skills, and related features — with preprocessing, feature selection, and model evaluation built in.
+> A custom gradient-descent Linear Regression model built from scratch to predict salary from years of experience — with Z-score normalization, loss tracking, and visualization.
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=flat-square&logo=python)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-ML-orange?style=flat-square&logo=scikit-learn)
+![NumPy](https://img.shields.io/badge/NumPy-scientific-blue?style=flat-square&logo=numpy)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-visualization-orange?style=flat-square)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=flat-square&logo=jupyter)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
@@ -11,40 +12,65 @@
 
 ## Overview
 
-This project explores how input variables like years of experience and skill set correlate with salary. A regression model is trained, evaluated, and structured for future extensions including advanced algorithms and web deployment.
+This project predicts an employee's salary based on their years of experience using a **custom Linear Regression model** implemented from scratch with gradient descent — no Scikit-learn for modeling. The dataset contains 30 samples spanning 1.1 to 10.5 years of experience, with salaries ranging from $37,731 to $122,391.
+
+---
+
+## Dataset
+
+| Property       | Value                                |
+| -------------- | ------------------------------------ |
+| File           | `Salary_Data.csv`                    |
+| Samples        | 30                                   |
+| Feature        | `YearsExperience` (1.1 – 10.5 years) |
+| Target         | `Salary` ($37,731 – $122,391)        |
+| Missing Values | None                                 |
 
 ---
 
 ## ML Pipeline
 
-| Stage             | Description                                                |
-| ----------------- | ---------------------------------------------------------- |
-| Preprocessing     | Handle missing values, encode categoricals, scale features |
-| Feature Selection | Identify the variables most correlated with salary         |
-| Model Training    | Fit a Linear Regression model on the processed dataset     |
-| Evaluation        | Measure performance using R² Score and Mean Squared Error  |
+| Stage          | Description                                                            |
+| -------------- | ---------------------------------------------------------------------- |
+| Data Loading   | Load CSV with Pandas, extract `YearsExperience` and `Salary`           |
+| Normalization  | Z-score normalization (custom `norm()` using mean & variance)          |
+| Visualization  | Line plot to confirm linear relationship before modeling               |
+| Model Training | Custom `SimpleLR` class using gradient descent (lr=0.1, max_iter=2000) |
+| Loss Tracking  | MSE loss logged each iteration; training stops when loss change < 1e-6 |
+| Evaluation     | R² Score and MSE computed on training data                             |
 
 ---
 
-## Tech Stack
+## Model: Custom Linear Regression (`SimpleLR`)
 
-- **Language**: Python 3.10
-- **Data**: Pandas, NumPy
-- **Visualization**: Matplotlib, Seaborn
-- **Modeling**: Scikit-learn
-- **Environment**: Conda, Jupyter Notebook
+Built entirely with NumPy — no ML libraries for the core model.
+
+```python
+class SimpleLR:
+    def __init__(self, lr=0.1, max_iter=2000, threshold=1e-6):
+        ...
+    def predict(self, X):
+        return self.weight * X + self.bias
+    def fit(self, X, Y):
+        # Gradient descent with early stopping
+        ...
+    def plot(self, X, Y):
+        # Plot actual vs predicted
+        ...
+```
 
 ---
 
 ## Results
 
-| Metric                   | Value                |
-| ------------------------ | -------------------- |
-| Model                    | Linear Regression    |
-| R² Score                 | _fill after running_ |
-| Mean Squared Error (MSE) | _fill after running_ |
+| Metric               | Value                                      |
+| -------------------- | ------------------------------------------ |
+| **R² Score**         | **0.9570**                                 |
+| **MSE**              | **31,270,951**                             |
+| **RMSE**             | **~$5,592**                                |
+| Training Convergence | ~170 iterations (early stopping triggered) |
 
-The model successfully predicts salary based on input features with reasonable accuracy using regression techniques.
+The model explains **95.7%** of salary variance using only years of experience, converging smoothly with a steadily decreasing loss curve.
 
 ---
 
@@ -52,10 +78,21 @@ The model successfully predicts salary based on input features with reasonable a
 
 ```
 .
-├── regression.ipynb      # Main notebook
+├── regression.ipynb      # Main notebook (data loading → training → evaluation)
+├── Salary_Data.csv       # Dataset (30 samples)
 ├── requirements.txt      # Dependencies
 └── README.md             # Project documentation
 ```
+
+---
+
+## Tech Stack
+
+- **Language**: Python 3.10
+- **Data**: Pandas, NumPy
+- **Visualization**: Matplotlib
+- **Environment**: Conda, Jupyter Notebook
+- **Modeling**: Custom implementation (no Scikit-learn for the model)
 
 ---
 
@@ -80,16 +117,17 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-Open `regression.ipynb` and run all cells.
+Open `regression.ipynb` and run all cells in order.
 
 ---
 
 ## Roadmap
 
+- [ ] Add train/test split for proper generalization evaluation
 - [ ] Try advanced models (Random Forest, XGBoost)
-- [ ] Hyperparameter tuning via GridSearchCV
+- [ ] Hyperparameter tuning (learning rate, iterations)
 - [ ] Deploy as a Streamlit web app for interactive predictions
-- [ ] Incorporate larger, real-world salary datasets
+- [ ] Incorporate larger, real-world salary datasets with more features
 
 ---
 
